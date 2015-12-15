@@ -1,8 +1,9 @@
 #!/bin/sh
-CUR_DIR=`pwd`
+
 TOOL_DL=http://sourceforge.net/projects/adi-toolchain/files/2014R1/2014R1-RC2/i386
 TOOL_VERS=2014R1-RC2.i386
-BASE_DIR=/home/phil/work/dtest
+#BASE_DIR=/home/phil/work/dtest
+CUR_DIR=`pwd`
 BASE_DIR=${CUR_DIR}
 
 
@@ -38,8 +39,8 @@ fi
 echo "fetching tools"
 
 
-mkdir -p dl
-cd dl
+mkdir -p ${BASE_DIR}/dl
+cd ${BASE_DIR}/dl
 
 
 wget -nc ${TOOL_DL}/blackfin-toolchain-${TOOL_VERS}.tar.bz2
@@ -112,7 +113,7 @@ if [ ! -f ${BASE_DIR}/dl/bfin-dma-927.tar.gz  ] ; then
 fi
 
 if [ ! -f ${BASE_DIR}/dl/event_test-927.tar.gz  ] ; then
-  cp ${BASE_DIR}/sdcs/evernt_test-927.tar.gz ${BASE_DIR}/dl
+  cp ${BASE_DIR}/sdcs/event_test-927.tar.gz ${BASE_DIR}/dl
 fi
 
 if [ ! -f ${BASE_DIR}/dl/version-927.tar.gz  ] ; then
