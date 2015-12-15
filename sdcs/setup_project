@@ -1,5 +1,6 @@
 #!/bin/sh
 
+GIT_ACCESS=http
 TOOL_DL=http://sourceforge.net/projects/adi-toolchain/files/2014R1/2014R1-RC2/i386
 TOOL_VERS=2014R1-RC2.i386
 #BASE_DIR=/home/phil/work/dtest
@@ -9,7 +10,7 @@ BASE_DIR=${CUR_DIR}
 
 #U-BOOT
 if [ ! -d adi-u-boot-code ] ; then
-   git clone git://git.code.sf.net/p/adi-u-boot/code adi-u-boot-code
+   git clone ${GIT_ACCESS}://git.code.sf.net/p/adi-u-boot/code adi-u-boot-code
 else
    echo "adi-u-boot-code already downloaded"
 fi
@@ -17,9 +18,10 @@ fi
 
 #BUILDDROOT
 if [ ! -d adi-buildroot-code ] ; then
-    git clone git://git.code.sf.net/p/adi-buildroot/code adi-buildroot-code
+    git clone ${GIT_ACCESS}://git.code.sf.net/p/adi-buildroot/code adi-buildroot-code
 
 fi
+
 if [ ! -f ${BASE_DIR}/sdcs/.stamp_buildroot_ready ] ; then 
    cd adi-buildroot-code
    git checkout 2014R1-RC1
