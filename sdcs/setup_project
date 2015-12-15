@@ -119,12 +119,28 @@ fi
 if [ ! -f ${BASE_DIR}/dl/version-927.tar.gz  ] ; then
   cp ${BASE_DIR}/sdcs/version-927.tar.gz ${BASE_DIR}/dl
 fi
+
+cp ${BASE_DIR}/sdcs/Makefile.uboot ${BASE_DIR}/adi-u-boot-code/Makefile
+cp ${BASE_DIR}/sdcs/bf609-sdcs_defconfig.uboot ${BASE_DIR}/adi-u-boot-code/configs
+
 echo
 echo
 echo
 echo "#**********************************"
-echo "# Build Instructions"
+echo "# U-boot Build Instructions"
 echo "#**********************************"
+echo " . ./newpath"
+echo " cd adi-u-boot-code "
+echo " make  bf609-sdcs_defconfig"
+echo " make"
+
+echo
+echo
+echo
+echo "#**********************************"
+echo "# Linux Build Instructions"
+echo "#**********************************"
+echo " . ./newpath"
 echo " cd adi-buildroot-code "
 echo " make  bf609-sdcs_defconfig"
 echo " make"
