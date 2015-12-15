@@ -1,0 +1,146 @@
+#!/bin/sh
+CUR_DIR=`pwd`
+TOOL_DL=http://sourceforge.net/projects/adi-toolchain/files/2014R1/2014R1-RC2/i386
+TOOL_VERS=2014R1-RC2.i386
+BASE_DIR=/home/phil/work/dtest
+BASE_DIR=${CUR_DIR}
+
+
+#U-BOOT
+if [ ! -d adi-u-boot-code ] ; then
+   git clone git://git.code.sf.net/p/adi-u-boot/code adi-u-boot-code
+else
+   echo "adi-u-boot-code already downloaded"
+fi
+
+
+#BUILDDROOT
+if [ ! -d adi-buildroot-code ] ; then
+    git clone git://git.code.sf.net/p/adi-buildroot/code adi-buildroot-code
+
+fi
+if [ ! -f ${BASE_DIR}/sdcs/.stamp_buildroot_ready ] ; then 
+   cd adi-buildroot-code
+   git checkout 2014R1-RC1
+   git submodule update --init
+   cd linux/linux-kernel
+   git checkout 2014R1-RC1
+   cd ../../
+   cd testsuites/
+   git checkout 2013R1-RC1
+   cd ..
+   touch ${BASE_DIR}/sdcs/.stamp_buildroot_ready
+fi
+
+
+
+
+echo "fetching tools"
+
+
+mkdir -p dl
+cd dl
+
+
+wget -nc ${TOOL_DL}/blackfin-toolchain-${TOOL_VERS}.tar.bz2
+wget -nc ${TOOL_DL}/blackfin-toolchain-elf-gcc-4.3-${TOOL_VERS}.tar.bz2
+wget -nc ${TOOL_DL}/blackfin-toolchain-uclibc-default-${TOOL_VERS}.tar.bz2
+
+#wget http://sourceforge.net/projects/adi-u-boot/files/2014R1/2014R1-RC1/u-boot-2013.07-2014R1.tar.bz2
+#file u-boot-2013.07-2014R1.tar.bz2 
+#wget http://sourceforge.jp/projects/sfnet_adi-u-boot/downloads/2014R1/2014R1-RC1/u-boot-bf609-ezkit-2014R1.tar.bz2
+#file u-boot-bf609-ezkit-2014R1.tar.bz2 
+#more u-boot-bf609-ezkit-2014R1.tar.bz2 
+#wget http://sourceforge.jp/frs/g_redir.php?m=kent&f=%2Fadi-u-boot%2F2014R1%2F2014R1-RC1%2Fu-boot-bf609-ezkit-2014R1.tar.bz2
+#wget http://sourceforge.net/projects/adi-u-boot/files/latest/download
+#mv download u-boot-2013.07-2014R1.tar.bz2
+
+#exit
+
+if [ ! -f ${BASE_DIR}/sdcs/.stamp_tools_ready ] ; then 
+
+  mkdir -p ${BASE_DIR}/tools/opt/ext-toolchain
+  echo "At start"
+  ls -l ${BASE_DIR}/tools/opt/ext-toolchain
+   bzcat ${BASE_DIR}/dl/blackfin-toolchain-${TOOL_VERS}.tar.bz2 | \
+		tar --strip-components=3 --hard-dereference \
+                -C ${BASE_DIR}/tools/opt/ext-toolchain  -xf -
+
+echo "After blackfin-toolchain-${TOOL_VERS}.tar.bz2"
+ls -l ${BASE_DIR}/tools/opt/ext-toolchain
+
+bzcat ${BASE_DIR}/dl/blackfin-toolchain-elf-gcc-4.3-${TOOL_VERS}.tar.bz2 | \
+		tar --strip-components=3 --hard-dereference \
+                -C ${BASE_DIR}/tools/opt/ext-toolchain  -xf -
+
+echo "After blackfin-toolchain-elf-gcc-4.3-${TOOL_VERS}.tar.bz2"
+ls -l ${BASE_DIR}/tools/opt/ext-toolchain
+bzcat ${BASE_DIR}/dl/blackfin-toolchain-uclibc-default-${TOOL_VERS}.tar.bz2 | \
+		tar --strip-components=3 --hard-dereference \
+                -C ${BASE_DIR}/tools/opt/ext-toolchain  -xf -
+
+echo "After blackfin-uclibc-default-${TOOL_VERS}.tar.bz2"
+ls -l ${BASE_DIR}/tools/opt/ext-toolchain
+touch ${BASE_DIR}/sdcs/.stamp_tools_ready
+
+echo tools extracted
+
+fi
+
+if [ ! -f ${BASE_DIR}/newpath ] ; then
+
+
+  TOOL_DIR=${BASE_DIR}/tools/opt/ext-toolchain
+  echo "export PATH=\\"                        > ${BASE_DIR}/newpath
+  echo "${TOOL_DIR}/bfin-elf/bin:\\"          >> ${BASE_DIR}/newpath
+  echo "${TOOL_DIR}/bfin-linux-uclibc/bin:\\"  >> ${BASE_DIR}/newpath
+  echo "${TOOL_DIR}/bfin-uclinux/bin:\\"       >> ${BASE_DIR}/newpath 
+  echo "/usr/local/sbin:/usr/local/bin:/usr/sbin:\\" >> ${BASE_DIR}/newpath 
+  echo "/usr/bin:/sbin:/bin:/usr/games:/usr/local/games\\" >> ${BASE_DIR}/newpath 
+
+#echo $PATH
+fi
+
+. ${BASE_DIR}/newpath
+which bfin-uclinux-gcc
+if [ ! -f ${BASE_DIR}/adi-buildroot-code/configs/bf609-sdcs_defconfig ] ; then
+  cp ${BASE_DIR}/sdcs/bf609-sdcs_defconfig ${BASE_DIR}/adi-buildroot-code/configs/
+fi
+
+if [ ! -f ${BASE_DIR}/dl/bfin-dma-927.tar.gz  ] ; then
+  cp ${BASE_DIR}/sdcs/bfin-dma-927.tar.gz ${BASE_DIR}/dl
+fi
+
+if [ ! -f ${BASE_DIR}/dl/event_test-927.tar.gz  ] ; then
+  cp ${BASE_DIR}/sdcs/evernt_test-927.tar.gz ${BASE_DIR}/dl
+fi
+
+if [ ! -f ${BASE_DIR}/dl/version-927.tar.gz  ] ; then
+  cp ${BASE_DIR}/sdcs/version-927.tar.gz ${BASE_DIR}/dl
+fi
+echo
+echo
+echo
+echo "#**********************************"
+echo "# Build Instructions"
+echo "#**********************************"
+echo " cd adi-buildroot-code "
+echo " make  bf609-sdcs_defconfig"
+echo " make"
+
+exit
+#
+#
+# build notes
+# you need the following file
+# sdcs/bf609-sdcs_defconfig
+# also the dl/ dir must have the following ( found in the sdcs dir)
+# bfin-dma-927.tar.gz 
+# strace-927.tar.gz ( not used)
+# event_test-927.tar.gz
+# version-927.tar.gz
+
+#to build 
+ 
+
+#tar xvf ${BASE_DIR}/dl/u-boot-2013.07-2014R1.tar.bz2 
