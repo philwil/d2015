@@ -1,0 +1,4 @@
+config BR2_PACKAGE_MY_USER
+	bool "my_user"
+	help
+	  Example User Code

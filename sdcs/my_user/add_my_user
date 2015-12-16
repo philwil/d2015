@@ -1,0 +1,11 @@
+--- package/Config.in.orig	2015-12-16 08:12:30.053737420 -0500
++++ package/Config.in	2015-12-16 08:13:56.183492943 -0500
+@@ -977,4 +977,8 @@
+ endif
+ endmenu
+ 
++menu "My User Code"
++source "package/my_user/Config.in"
++endmenu
++
+ endmenu

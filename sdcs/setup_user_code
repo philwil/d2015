@@ -1,0 +1,102 @@
+Buildroot User code
+
+The package/xxxx dir contains the buildroot instructions 
+
+Example
+adi-buildroot-code/package/my_user
+
+
+Files
+adi-buildroot-code/package/my_user/Config.in
+adi-buildroot-code/package/my_user/my_user.mk
+
+And optional patches
+adi-buildroot-code/package/my_user/my_user_0001.patch
+
+
+
+adi-buildroot-code/package/my_user/Config.in
+
+=================================================
+config BR2_PACKAGE_MY_USER
+	bool "my_user"
+	help
+	  Example User Code
+=================================================
+
+adi-buildroot-code/package/my_user/my_user.mk
+============================================================================
+################################################################################
+#
+# my_user
+#
+################################################################################
+
+MY_USER_VERSION = 1.0.0
+MY_USER_SOURCE = my_user-$(MY_USER_VERSION).tar.gz
+MY_USER_SITE = http://dummyhost/distfiles
+
+
+define MY_USER_UNINSTALL_TARGET_CMDS
+	rm -f $(TARGET_DIR)/usr/bin/my_user
+endef
+
+$(eval $(autotools-package))
+===========================================================
+
+We can add patches
+For example
+adi-buildroot-code/package/my_user/my_user_0001.patch
+
+
+The package is kept as a tar file in the dl dir
+
+In this example  the sdcs/my_user dir has a make file with some extra targets.
+
+make br_config -> to add the my_user package to the config options
+make br_install -> to add the my_user package to the build system
+make package -> to create the my_user-1.0.0.tar.gz file in the dl dir
+
+=============================================================
+Initial Setup
+=============================================================
+
+The first time you do any of this in the sdcs/my_user directory
+   make br_config package br_install
+Then
+
+   cd ../../adi_buildroot-code
+   make menuconfig
+
+the my_user config option will be in the build_options area
+
+
+Symbol: BR2_PACKAGE_MY_USER [=y]                                        
+ Type  : boolean                                                           
+ Prompt: my_user                                                           
+   Defined at package/my_user/Config.in:1                                  
+   Location:                                                               
+     -> Build options                                                    
+       -> My User Code
+
+This needs to be done once.
+
+If you may want to save the 
+   adi_buildroot-code/.config file 
+in 
+   configs/bf609-sdcs_defconfig 
+or 
+   configs/bf609-delta_defconfig 
+
+=============================================================
+After the initial set up
+=============================================================
+Every time you do a change to the sdcs/my_user code then do a 
+
+    make package br_install
+
+followed by
+
+  cd ../../.adi_buildroot-code
+  make
+
