@@ -1,0 +1,75 @@
+orig code
+
+bfin> mmc info                                                                  
+sending CMD8 failed                                                             
+sending CMD55 failed                                                            
+Device: Blackfin SDH                                                            
+Manufacturer ID: fe                                                             
+OEM: 14e                                                                        
+Name: P1XXX                                                                     
+Tran Speed: 25000000                                                            
+Rd Block Len: 512                                                               
+MMC version 4.5                                                                 
+High Capacity: Yes                                                              
+Capacity: 3.6 GiB                                                               
+Bus Width: 4-bit        
+
+new code
+======================================
+bfin> mmc info                                                                  
+sending CMD8 failed                                                             
+sending CMD55 failed                                                            
+Device: Blackfin SDH                                                            
+Manufacturer ID: fe                                                             
+OEM: 14e                                                                        
+Name: P1XXX                                                                     
+Tran Speed: 25000000                                                            
+Rd Block Len: 512                                                               
+MMC version 4.5                                                                 
+High Capacity: Yes                                                              
+Capacity: 3.6 GiB                                                               
+Bus Width: 4-bit                                                                
+Erase Group Size: 512 KiB                                                       
+HC WP Group Size: 4 MiB                                                         
+User Capacity: 3.6 GiB                                                          
+Boot Capacity: 16 MiB ENH                                                       
+RPMB Capacity: 128 KiB ENH  
+bfin> mmc erase 400 400                                                         
+                                                                                
+MMC erase: dev # 0, block # 1024, count 1024 ... CMD_SEND:35                    
+                ARG                      0x00000400                             
+                MMC_RSP_R1,5,6,7         0x00000900                             
+CMD_SEND:36                                                                     
+                ARG                      0x000007FF                             
+                MMC_RSP_R1,5,6,7         0x00000900                             
+CMD_SEND:38                                                                     
+                ARG                      0x80000000                             
+                MMC_RSP_R1b              0x00000800                             
+CMD_SEND:13                                                                     
+                ARG                      0x00010000                             
+                MMC_RSP_R1,5,6,7         0x00000900                             
+CURR STATE:4                                                                    
+1024 blocks erased: OK                                                          
+bfin> mmc read 1000000 400 10                                                   
+                                                                                
+MMC read: dev # 0, block # 1024, count 16 ... CMD_SEND:16                       
+                ARG                      0x00000200                             
+                MMC_RSP_R1,5,6,7         0x00000900                             
+CMD_SEND:18                                                                     
+                ARG                      0x00000400                             
+                MMC_RSP_R1,5,6,7         0x00000900                             
+CMD_SEND:12                                                                     
+                ARG                      0x00000000                             
+                MMC_RSP_R1b              0x00000B00                             
+16 blocks read: OK                                                              
+bfin> mmc write  1000000 400 10                                                 
+                                                                                
+MMC write: dev # 0, block # 1024, count 16 ... CMD_SEND:16                      
+                ARG                      0x00000010                             
+                MMC_RSP_R1,5,6,7         0x00000900                             
+CMD_SEND:25                                                                     
+                ARG                      0x00000400                             
+                MMC_RSP_R1,5,6,7         0x00000B00                             
+mmc write failed                                                                
+0 blocks written: ERROR                                                         
+bfin> 

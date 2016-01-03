@@ -105,25 +105,26 @@ if [ ! -f ${BASE_DIR}/newpath ] ; then
 fi
 
 . ${BASE_DIR}/newpath
+
 which bfin-uclinux-gcc
 if [ ! -f ${BASE_DIR}/adi-buildroot-code/configs/bf609-sdcs_defconfig ] ; then
-  cp ${BASE_DIR}/sdcs/bf609-sdcs_defconfig ${BASE_DIR}/adi-buildroot-code/configs/
+  cp ${BASE_DIR}/bf609-sdcs_defconfig ${BASE_DIR}/adi-buildroot-code/configs/
 fi
 
 if [ ! -f ${BASE_DIR}/dl/bfin-dma-927.tar.gz  ] ; then
-  cp ${BASE_DIR}/sdcs/bfin-dma-927.tar.gz ${BASE_DIR}/dl
+  cp ${BASE_DIR}/bfin-dma-927.tar.gz ${BASE_DIR}/dl
 fi
 
 if [ ! -f ${BASE_DIR}/dl/event_test-927.tar.gz  ] ; then
-  cp ${BASE_DIR}/sdcs/event_test-927.tar.gz ${BASE_DIR}/dl
+  cp ${BASE_DIR}/event_test-927.tar.gz ${BASE_DIR}/dl
 fi
 
 if [ ! -f ${BASE_DIR}/dl/version-927.tar.gz  ] ; then
-  cp ${BASE_DIR}/sdcs/version-927.tar.gz ${BASE_DIR}/dl
+  cp ${BASE_DIR}version-927.tar.gz ${BASE_DIR}/dl
 fi
 
-cp ${BASE_DIR}/sdcs/Makefile.uboot ${BASE_DIR}/adi-u-boot-code/Makefile
-cp ${BASE_DIR}/sdcs/bf609-sdcs_defconfig.uboot ${BASE_DIR}/adi-u-boot-code/configs
+cp ${BASE_DIR}/Makefile.uboot ${BASE_DIR}/adi-u-boot-code/Makefile
+cp ${BASE_DIR}/bf609-sdcs_defconfig.uboot ${BASE_DIR}/adi-u-boot-code/configs
 
 echo
 echo
@@ -163,3 +164,27 @@ exit
  
 
 #tar xvf ${BASE_DIR}/dl/u-boot-2013.07-2014R1.tar.bz2 
+
+bfin> mmc info                                                                  
+sending CMD8 failed                                                             
+sending CMD55 failed                                                            
+Device: Blackfin SDH                                                            
+Manufacturer ID: fe                                                             
+OEM: 14e                                                                        
+Name: P1XXX                                                                     
+Tran Speed: 25000000                                                            
+Rd Block Len: 512                                                               
+MMC version 4.5                                                                 
+High Capacity: Yes                                                              
+Capacity: 3.6 GiB                                                               
+Bus Width: 4-bit                                                                
+Erase Group Size: 512 KiB                                                       
+HC WP Group Size: 4 MiB                                                         
+User Capacity: 3.6 GiB                                                          
+Boot Capacity: 16 MiB ENH                                                       
+RPMB Capacity: 128 KiB ENH  \
+
+
+cp configs/bf609-ezkit_defconfig  configs/bf609-sdcs_defconfig 
+make  bf609-sdcs_defconfig
+make
