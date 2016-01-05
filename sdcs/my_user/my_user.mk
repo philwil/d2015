@@ -13,4 +13,8 @@ define MY_USER_UNINSTALL_TARGET_CMDS
 	rm -f $(TARGET_DIR)/usr/bin/my_user
 endef
 
-$(eval $(autotools-package))
+define MY_USER_BUILD_CMDS
+        $(TARGET_MAKE_NV) $(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(@D)
+endef
+
+$(eval $(generic-package))
