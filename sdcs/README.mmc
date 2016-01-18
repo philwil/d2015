@@ -1,0 +1,168 @@
+
+First running under linux with the default config
+
+   Create a mount directory
+
+root:/> mkdir /mnt/mmc                                                          
+   then format create the partition
+
+root:/> fdisk /dev/mmcblk0   
+
+Device contains neither a valid DOS partition table, nor Sun, SGI, OSF or GPT dl
+Building a new DOS disklabel. Changes will remain in memory only,               
+until you decide to write them. After that the previous content                 
+won't be recoverable.                                                           
+                                                                                
+                                                                                
+The number of cylinders for this disk is set to 118016.                         
+There is nothing wrong with that, but this is larger than 1024,                 
+and could in certain setups cause problems with:                                
+1) software that runs at boot time (e.g., old versions of LILO)                 
+2) booting and partitioning software from other OSs                             
+   (e.g., DOS FDISK, OS/2 FDISK)                                                
+                                                                                
+Command (m for help): n   <<<<   
+Command action                                                                  
+   e   extended                                                                 
+   p   primary partition (1-4)                                                  
+p   <<<<
+Partition number (1-4): 1 <<<
+First cylinder (1-118016, default 1):                                           
+Using default value 1                                                           
+Last cylinder or +size or +sizeM or +sizeK (1-118016, default 118016): 1020 <<<
+                                                                                
+Command (m for help): p <<<
+                                                                                
+Disk /dev/mmcblk0: 3867 MB, 3867148288 bytes                                    
+4 heads, 16 sectors/track, 118016 cylinders                                     
+Units = cylinders of 64 * 512 = 32768 bytes                                     
+                                                                                
+        Device Boot      Start         End      Blocks  Id System               
+/dev/mmcblk0p1               1        1020       32632  83 Linux                
+                                                                                
+Command (m for help): t  <<<
+Selected partition 1                                                            
+Hex code (type L to list codes): b <<<
+Changed system type of partition 1 to b (Win95 FAT32)                           
+                                                                                
+Command (m for help): p <<<
+
+Disk /dev/mmcblk0: 3867 MB, 3867148288 bytes                                    
+4 heads, 16 sectors/track, 118016 cylinders                                     
+Units = cylinders of 64 * 512 = 32768 bytes                                     
+                                                                                
+        Device Boot      Start         End      Blocks  Id System               
+/dev/mmcblk0p1               1        1020       32632   b Win95 FAT32          
+                                                                                
+Command (m for help): w <<<
+
+The partition table has been altered.                                           
+Calling ioctl() to re-read partition table                                      
+ mmcblk0: p1                                                                    
+
+  Next re reun fdisk to check
+
+root:/> fdisk /dev/mmcblk0                                                      
+                                                                                
+The number of cylinders for this disk is set to 118016.                         
+There is nothing wrong with that, but this is larger than 1024,                 
+and could in certain setups cause problems with:                                
+1) software that runs at boot time (e.g., old versions of LILO)                 
+2) booting and partitioning software from other OSs                             
+   (e.g., DOS FDISK, OS/2 FDISK)                                                
+                                                                                
+Command (m for help): p <<<
+                                                                                
+Disk /dev/mmcblk0: 3867 MB, 3867148288 bytes                                    
+4 heads, 16 sectors/track, 118016 cylinders                                     
+Units = cylinders of 64 * 512 = 32768 bytes                                     
+                                                                                
+        Device Boot      Start         End      Blocks  Id System               
+/dev/mmcblk0p1               1        1020       32632   b Win95 FAT32          
+                                                                                
+Command (m for help): q <<<
+
+
+     Next we have to make a vfat file system
+
+root:/> mkfs.vfat /dev/mmcblk0p1 
+
+     Next we moount that file system under linux                                
+
+root:/> mount -t vfat /dev/mmcblk0p1 /mnt/mmc                                   
+root:/> mount                                                                   
+rootfs on / type rootfs (rw)                                                    
+devtmpfs on /dev type devtmpfs (rw,relatime,mode=0755)                          
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)                       
+sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime)                      
+mdev on /dev type tmpfs (rw,nosuid,relatime,mode=0755,size=10M)                 
+devpts on /dev/pts type devpts (rw,nosuid,noexec,relatime,mode=600)             
+var on /var type tmpfs (rw,relatime)                                            
+tmp on /tmp type tmpfs (rw,nosuid,nodev,relatime,mode=777)                      
+debugfs on /sys/kernel/debug type debugfs (rw,relatime)                         
+/dev/mmcblk0p1 on /mnt/mmc type vfat (rw,relatime,fmask=0022,dmask=0022,codepag)
+
+
+  Now we can copy s large file to the new file system.
+
+root:/> df -h                                                                   
+Filesystem                Size      Used Available Use% Mounted on              
+/dev/mmcblk0p1           31.4M       512     31.4M   0% /mnt/mmc                
+
+root:/> ls -l /bin/busybox                                                      
+-rwsr-xr-x    1 root     root        461132 Jan 18  2016 /bin/busybox           
+
+root:/> cp /bin/busybox /mnt/mmc                                                
+
+root:/> ls /mnt/mmc                                                             
+busybox                                                                         
+root:/> sync                                                                    
+root:/> reboot
+
+
+
+  N ow under uboot load the file
+
+bfin> mmc set                                                                   
+mmc - MMC sub system                                                            
+                                                                                
+Usage:                                                                          
+mmc info - display info of the current MMC device                               
+mmc read addr blk# cnt                                                          
+mmc write addr blk# cnt                                                         
+mmc erase blk# cnt                                                              
+mmc rescan                                                                      
+mmc part - lists available partition on current mmc device                      
+mmc dev [dev] [part] - show or set current mmc device [partition]               
+mmc list - lists available devices                                              
+mmc setdsr <value> - set DSR register value                                     
+
+
+ Look at the partitions
+                                                                                
+bfin> mmc part                                                                  
+                                                                                
+Partition Map for MMC device 0  --   Partition Type: DOS                        
+                                                                                
+Part    Start Sector    Num Sectors     UUID            Type                    
+  1     16              65264           00000000-01     0b                      
+
+  List a selected partition
+
+bfin> fatls mmc 0:1                                                             
+   461132   busybox                                                             
+                                                                                
+1 file(s), 0 dir(s)                                                             
+
+
+  Load a file from that partition
+                                                                                
+bfin> fatload mmc 0:1 1000000 busybox                                           
+reading busybox                                                                 
+461132 bytes read in 55 ms (8 MiB/s)           
+
+
+
+
+
+       
