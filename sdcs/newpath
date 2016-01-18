@@ -1,0 +1,18 @@
+
+if [ -d /home/phil/work/dforce/tools/opt/ext-toolchain ] ; then
+  BASE_DIR=/home/phil/work/dforce/tools/opt/ext-toolchain
+  
+fi
+
+if [ -d /home2/bob/work/d2015/dforce/tools/opt/ext-toolchain ] ; then
+  BASE_DIR=/home2/bob/work/d2015/dforce/tools/opt/ext-toolchain
+fi
+
+
+export PATH=\
+${BASE_DIR}/bfin-elf/bin:\
+${BASE_DIR}/bfin-linux-uclibc/bin:\
+${BASE_DIR}/bfin-uclinux/bin:\
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+
+echo $PATH
