@@ -1,0 +1,11 @@
+if [ -d /mnt/lvm/home/phil/work/d2015/sdcs/tools_full/opt/uClinux ] ; then
+   BASEDIR=/mnt/lvm/home/phil/work/d2015/sdcs/tools_full/opt/uClinux
+else
+   BASEDIR=/home/phil/work/d2015/sdcs/tools/opt/ext-toolchain
+fi
+export PATH=\
+${BASEDIR}/bfin-elf/bin:\
+${BASEDIR}/bfin-linux-uclibc/bin:\
+${BASEDIR}/bfin-uclinux/bin:\
+/usr/local/sbin:/usr/local/bin:/usr/sbin:\
+/usr/bin:/sbin:/bin:/usr/games:/usr/local/games\
